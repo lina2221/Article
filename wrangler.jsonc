@@ -1,0 +1,9 @@
+{
+	// Cloudflare Workers 静态资源配置：把 astro build 产出的 dist/ 作为静态站点托管
+	"name": "article",
+	"compatibility_date": "2026-11-01",
+	"assets": {
+		"directory": "./dist",
+		"html_handling": "auto-trailing-slash"
+	}
+}
