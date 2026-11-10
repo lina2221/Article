@@ -1,12 +1,22 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 ---
 
 <header>
 	<nav>
 		<h2>
-			<a href="/">{SITE_TITLE}</a>
+			<a href="/" class="site-brand">
+				<img
+					src={xiaoqiaoAvatar.src}
+					alt="小乔头像"
+					width="40"
+					height="40"
+					class="site-avatar"
+				/>
+				<span>{SITE_TITLE}</span>
+			</a>
 		</h2>
 		<div class="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
@@ -48,8 +58,12 @@ import HeaderLink from './HeaderLink.astro';
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+		background: rgba(255, 255, 255, 0.55);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		box-shadow: 0 2px 14px rgba(255, 95, 168, 0.18);
+		border-bottom: 2px solid rgba(255, 95, 168, 0.3);
+		border-radius: 0 0 20px 20px;
 	}
 	h2 {
 		margin: 0;
@@ -59,6 +73,26 @@ import HeaderLink from './HeaderLink.astro';
 	h2 a,
 	h2 a.active {
 		text-decoration: none;
+		color: var(--accent);
+		font-weight: 800;
+		letter-spacing: 0.5px;
+	}
+	.site-brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55em;
+	}
+	.site-avatar {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid rgba(255, 95, 168, 0.55);
+		box-shadow: 0 2px 8px rgba(255, 95, 168, 0.35);
+		transition: transform 0.4s ease;
+	}
+	.site-brand:hover .site-avatar {
+		transform: rotate(-8deg) scale(1.08);
 	}
 	nav {
 		display: flex;

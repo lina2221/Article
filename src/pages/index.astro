@@ -2,58 +2,238 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import xiaoqiaoHero from '../assets/xiaoqiao-hero.jpg';
+import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to
-				build a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your{' '}
-				<code>astro.config.mjs</code> file. You can customize your setup with{' '}
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like
-				Tailwind, React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>
-					Edit this page in <code>src/pages/index.astro</code>
-				</li>
-				<li>
-					Edit the site header items in <code>src/components/Header.astro</code>
-				</li>
-				<li>
-					Add your name to the footer in <code>src/components/Footer.astro</code>
-				</li>
-				<li>
-					Check out the included blog posts in <code>src/content/blog/</code>
-				</li>
-				<li>
-					Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code>
-				</li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to{' '}
-				<a href="https://docs.astro.build/">read the docs</a> or{' '}
-				<a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out{' '}
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a> by{' '}
-				<a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="hero">
+				<div class="hero-text">
+					<h1>
+						欢迎来到<span class="gradient-text">小乔的次元小窝</span>
+						<span class="wave">♡</span>
+					</h1>
+					<p class="tagline">
+						「恋之微风，如约而至。」<br />
+						这里记录我的学习笔记、生活碎碎念和各种好玩的东西，
+						欢迎常来玩呀～ (｡･ω･｡)ﾉ♡
+					</p>
+					<div class="hero-actions">
+						<a href="/blog" class="btn btn-primary">📖 开始阅读</a>
+						<a href="/about" class="btn btn-ghost">🌸 关于我</a>
+					</div>
+				</div>
+				<div class="hero-avatar">
+					<img src={xiaoqiaoAvatar.src} alt="小乔" width="140" height="140" />
+					<span class="avatar-glow"></span>
+				</div>
+			</section>
+
+			<section class="hero-image-wrap">
+				<img
+					src={xiaoqiaoHero.src}
+					alt="王者荣耀·小乔 恋之微风 原画"
+					class="hero-image"
+				/>
+				<p class="credit">形象来源：《王者荣耀》小乔「恋之微风」原画 © 腾讯 · 仅作个人非商用装饰</p>
+			</section>
+
+			<section class="latest">
+				<h2>✨ 最近的文章</h2>
+				<div class="post-grid">
+					{
+						posts.map((post) => (
+							<a href={`/blog/${post.id}/`} class="post-card">
+								<h3>{post.data.title}</h3>
+								<p>{post.data.description}</p>
+								<time>
+									<FormattedDate date={post.data.pubDate} />
+								</time>
+							</a>
+						))
+					}
+				</div>
+				<a href="/blog" class="more-link">查看全部文章 →</a>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.hero {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+		padding: 3.5rem 0 2rem;
+		flex-wrap: wrap;
+	}
+	.hero-text h1 {
+		font-size: 2.4rem;
+		line-height: 1.3;
+		margin: 0 0 1rem;
+	}
+	.gradient-text {
+		background: linear-gradient(90deg, var(--accent), var(--accent2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+	.wave {
+		color: var(--accent);
+		display: inline-block;
+		animation: pulse 1.6s ease-in-out infinite;
+	}
+	@keyframes pulse {
+		0%,
+		100% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.25);
+		}
+	}
+	.tagline {
+		font-size: 1.1rem;
+		color: var(--gray-700, #5c5470);
+		margin-bottom: 1.5rem;
+	}
+	.hero-actions {
+		display: flex;
+		gap: 0.8rem;
+		flex-wrap: wrap;
+	}
+	.btn {
+		display: inline-block;
+		padding: 0.65em 1.4em;
+		border-radius: 999px;
+		text-decoration: none;
+		font-weight: 700;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.btn:hover {
+		transform: translateY(-2px);
+	}
+	.btn-primary {
+		background: linear-gradient(90deg, var(--accent), var(--accent2));
+		color: #fff;
+		box-shadow: 0 4px 14px rgba(255, 95, 168, 0.4);
+	}
+	.btn-ghost {
+		background: rgba(255, 255, 255, 0.7);
+		color: var(--accent-dark, #d63384);
+		border: 2px solid rgba(255, 95, 168, 0.45);
+	}
+	.hero-avatar {
+		position: relative;
+		width: 140px;
+		height: 140px;
+		flex: none;
+	}
+	.hero-avatar img {
+		width: 140px;
+		height: 140px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 4px solid #fff;
+		box-shadow: 0 6px 24px rgba(255, 95, 168, 0.4);
+		animation: float 3.5s ease-in-out infinite;
+	}
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
+	}
+	.hero-image-wrap {
+		text-align: center;
+	}
+	.hero-image {
+		width: 100%;
+		max-width: 1000px;
+		border-radius: 24px;
+		box-shadow: 0 10px 40px rgba(255, 95, 168, 0.28);
+	}
+	.credit {
+		font-size: 0.78rem;
+		color: #9a8fae;
+		margin-top: 0.6rem;
+	}
+	.latest {
+		padding: 3rem 0 4rem;
+	}
+	.latest h2 {
+		font-size: 1.5rem;
+		color: var(--accent-dark, #d63384);
+	}
+	.post-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 1.2rem;
+		margin: 1.2rem 0;
+	}
+	.post-card {
+		display: block;
+		background: rgba(255, 255, 255, 0.75);
+		border-radius: 18px;
+		padding: 1.2rem 1.3rem;
+		text-decoration: none;
+		color: inherit;
+		box-shadow: 0 3px 14px rgba(255, 95, 168, 0.12);
+		border: 1px solid rgba(255, 95, 168, 0.18);
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.post-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 24px rgba(255, 95, 168, 0.25);
+	}
+	.post-card h3 {
+		margin: 0 0 0.5rem;
+		color: var(--accent-dark, #d63384);
+	}
+	.post-card p {
+		font-size: 0.92rem;
+		color: #6b6280;
+		margin: 0 0 0.8rem;
+	}
+	.post-card time {
+		font-size: 0.8rem;
+		color: #a396bd;
+	}
+	.more-link {
+		display: inline-block;
+		color: var(--accent);
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.more-link:hover {
+		text-decoration: underline;
+	}
+	@media (max-width: 720px) {
+		.hero {
+			flex-direction: column-reverse;
+			text-align: center;
+		}
+		.hero-actions {
+			justify-content: center;
+		}
+	}
+</style>
