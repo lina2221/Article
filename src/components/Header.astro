@@ -1,7 +1,6 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
-import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 ---
 
 <header>
@@ -9,11 +8,13 @@ import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 		<h2>
 			<a href="/" class="site-brand">
 				<img
-					src={xiaoqiaoAvatar.src}
+					id="siteAvatar"
+					src="/xiaoqiao/avatar-pink.jpg"
 					alt="小乔头像"
 					width="40"
 					height="40"
 					class="site-avatar"
+					data-xq-avatar
 				/>
 				<span>{SITE_TITLE}</span>
 			</a>
@@ -53,16 +54,19 @@ import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 			</a>
 		</div>
 	</nav>
+	<button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题风格" title="点击切换主题">🎨</button>
 </header>
 <style>
 	header {
 		margin: 0;
 		padding: 0 1em;
+		position: relative;
+		z-index: 1;
 		background: rgba(255, 255, 255, 0.55);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
-		box-shadow: 0 2px 14px rgba(255, 95, 168, 0.18);
-		border-bottom: 2px solid rgba(255, 95, 168, 0.3);
+		box-shadow: 0 2px 14px rgba(var(--accent-rgb), 0.18);
+		border-bottom: 2px solid rgba(var(--accent-rgb), 0.3);
 		border-radius: 0 0 20px 20px;
 	}
 	h2 {
@@ -87,8 +91,8 @@ import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 		height: 40px;
 		border-radius: 50%;
 		object-fit: cover;
-		border: 2px solid rgba(255, 95, 168, 0.55);
-		box-shadow: 0 2px 8px rgba(255, 95, 168, 0.35);
+		border: 2px solid rgba(var(--accent-rgb), 0.55);
+		box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.35);
 		transition: transform 0.4s ease;
 	}
 	.site-brand:hover .site-avatar {
@@ -113,9 +117,40 @@ import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 	.social-links a {
 		display: flex;
 	}
+
+	/* ===== 右上角主题切换按钮（点击顺序循环） ===== */
+	.theme-toggle {
+		position: fixed;
+		top: 72px;
+		right: 14px;
+		z-index: 100;
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		border: 2px solid rgba(255, 255, 255, 0.85);
+		background: rgba(255, 255, 255, 0.72);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+		cursor: pointer;
+		font-size: 21px;
+		display: grid;
+		place-items: center;
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
+	}
+	.theme-toggle:hover {
+		transform: scale(1.08) rotate(-8deg);
+		box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.4);
+	}
+	.theme-toggle:active {
+		transform: scale(0.94);
+	}
 	@media (max-width: 720px) {
 		.social-links {
 			display: none;
+		}
+		.theme-toggle {
+			top: 64px;
 		}
 	}
 </style>

@@ -5,8 +5,6 @@ import Header from '../components/Header.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
-import xiaoqiaoHero from '../assets/xiaoqiao-hero.jpg';
-import xiaoqiaoAvatar from '../assets/xiaoqiao-avatar.png';
 
 const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -24,7 +22,7 @@ const posts = (await getCollection('blog'))
 			<section class="hero">
 				<div class="hero-text">
 					<h1>
-						欢迎来到<span class="gradient-text">小乔的次元小窝</span>
+						欢迎来到<span class="gradient-text">小乔大王的次元小窝</span>
 						<span class="wave">♡</span>
 					</h1>
 					<p class="tagline">
@@ -38,18 +36,19 @@ const posts = (await getCollection('blog'))
 					</div>
 				</div>
 				<div class="hero-avatar">
-					<img src={xiaoqiaoAvatar.src} alt="小乔" width="140" height="140" />
+					<img id="heroAvatar" src="/xiaoqiao/avatar-pink.jpg" alt="小乔" width="140" height="140" data-xq-avatar />
 					<span class="avatar-glow"></span>
 				</div>
 			</section>
 
 			<section class="hero-image-wrap">
 				<img
-					src={xiaoqiaoHero.src}
-					alt="王者荣耀·小乔 恋之微风 原画"
+					id="heroImg"
+					src="/xiaoqiao/hero-pink.jpg"
+					alt="王者荣耀·小乔 主题皮肤原画"
 					class="hero-image"
 				/>
-				<p class="credit">形象来源：《王者荣耀》小乔「恋之微风」原画 © 腾讯 · 仅作个人非商用装饰</p>
+				<p class="credit">形象来源：《王者荣耀》小乔皮肤原画（恋之微风 / 时之魔女 / 天鹅之梦 / 山海・琳琅生 / 线条小狗联动，随主题切换）© 腾讯 · 仅作个人非商用装饰</p>
 			</section>
 
 			<section class="latest">

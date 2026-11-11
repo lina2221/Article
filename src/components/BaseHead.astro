@@ -50,3 +50,148 @@ const { title, description, image = FallbackImage } = Astro.props;
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
+
+<script>
+	(function () {
+		const KEY = 'xq-theme';
+		const root = document.documentElement;
+		const toggle = document.getElementById('themeToggle');
+		const THEME_KEYS = ['pink', 'blue', 'purple', 'yellow', 'green'];
+
+		// ---------- 粒子背景 ----------
+		const canvas = document.createElement('canvas');
+		canvas.id = 'bg-particles';
+		document.body.appendChild(canvas);
+		const ctx = canvas.getContext('2d');
+		let W = 0, H = 0, dpr = 1;
+		function resize() {
+			dpr = Math.min(window.devicePixelRatio || 1, 2);
+			W = window.innerWidth; H = window.innerHeight;
+			canvas.width = W * dpr; canvas.height = H * dpr;
+			canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		}
+		resize();
+		window.addEventListener('resize', resize);
+
+		let particles = [];
+		let accent = [255, 95, 168];
+		let currentMode = 'float';
+		function hexToRgb(hex) {
+			hex = (hex || '').trim().replace('#', '');
+			if (hex.length === 3) hex = hex.split('').map((c) => c + c).join('');
+			const n = parseInt(hex, 16);
+			if (isNaN(n)) return null;
+			return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+		}
+		function readAccent() {
+			const v = getComputedStyle(root).getPropertyValue('--accent').trim();
+			let rgb = hexToRgb(v);
+			if (!rgb && v.indexOf('rgb') === 0) rgb = (v.match(/\d+/g) || []).map(Number);
+			if (rgb && rgb.length >= 3) accent = rgb.slice(0, 3);
+		}
+		function makeParticles() {
+			const count = W < 720 ? 40 : 90;
+			particles = [];
+			for (let i = 0; i < count; i++) {
+				if (currentMode === 'network') {
+					particles.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45, r: Math.random() * 1.8 + 0.8 });
+				} else {
+					particles.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.3, vy: -(Math.random() * 0.5 + 0.2), r: Math.random() * 2.2 + 1, a: Math.random() * 0.6 + 0.4, tw: Math.random() * 0.02 + 0.004, dir: Math.random() < 0.5 ? 1 : -1 });
+				}
+			}
+		}
+		function setParticleMode(mode) {
+			readAccent();
+			if (mode === currentMode && particles.length) return;
+			currentMode = mode;
+			makeParticles();
+		}
+		const D = 120;
+		function frame() {
+			ctx.clearRect(0, 0, W, H);
+			const [r, g, b] = accent;
+			if (currentMode === 'network') {
+				for (const p of particles) {
+					p.x += p.vx; p.y += p.vy;
+					if (p.x < 0 || p.x > W) p.vx *= -1;
+					if (p.y < 0 || p.y > H) p.vy *= -1;
+				}
+				for (let i = 0; i < particles.length; i++) {
+					for (let j = i + 1; j < particles.length; j++) {
+						const a = particles[i], c = particles[j];
+						const dx = a.x - c.x, dy = a.y - c.y;
+						const d = Math.hypot(dx, dy);
+						if (d < D) {
+							ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + ((1 - d / D) * 0.5).toFixed(3) + ')';
+							ctx.lineWidth = 1;
+							ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(c.x, c.y); ctx.stroke();
+						}
+					}
+				}
+				for (const p of particles) {
+					ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',0.9)';
+					ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
+				}
+			} else {
+				for (const p of particles) {
+					p.y += p.vy; p.x += p.vx; p.a += p.tw * p.dir;
+					if (p.a > 1) { p.a = 1; p.dir = -1; } else if (p.a < 0.2) { p.a = 0.2; p.dir = 1; }
+					if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+					if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+					ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + (p.a * 0.85).toFixed(3) + ')';
+					ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fill();
+					ctx.fillStyle = 'rgba(255,255,255,' + (p.a * 0.25).toFixed(3) + ')';
+					ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 1.9, 0, 6.2832); ctx.fill();
+				}
+			}
+			requestAnimationFrame(frame);
+		}
+		makeParticles();
+		frame();
+
+		// ---------- 主题对应的角色资源（原画 / 头像 / 标签页图标） ----------
+		const MEDIA = {
+			pink:   { hero: '/xiaoqiao/hero-pink.jpg',   avatar: '/xiaoqiao/avatar-pink.jpg' },
+			blue:   { hero: '/xiaoqiao/hero-blue.jpg',   avatar: '/xiaoqiao/avatar-blue.jpg' },
+			purple: { hero: '/xiaoqiao/hero-purple.jpg', avatar: '/xiaoqiao/avatar-purple.jpg' },
+			yellow: { hero: '/xiaoqiao/hero-yellow.jpg', avatar: '/xiaoqiao/avatar-yellow.jpg' },
+			green:  { hero: '/xiaoqiao/hero-green.jpg',  avatar: '/xiaoqiao/avatar-green.jpg' },
+		};
+		function applyMedia(key) {
+			const m = MEDIA[key];
+			if (!m) return;
+			const hero = document.getElementById('heroImg');
+			if (hero) hero.src = m.hero;
+			document.querySelectorAll('img[data-xq-avatar]').forEach(function (el) { el.src = m.avatar; });
+			// 标签页图标（favicon）也跟着换
+			const fav = document.querySelector('link[rel="icon"]');
+			if (fav) { fav.setAttribute('href', m.avatar); fav.setAttribute('type', 'image/jpeg'); }
+		}
+
+		// ---------- 主题切换 ----------
+		function applyTheme(key, persist) {
+			if (THEME_KEYS.indexOf(key) === -1) key = 'pink';
+			root.setAttribute('data-theme', key);
+			// 蓝色 / 金色 -> 连线网络粒子；粉色 / 紫色 / 绿色 -> 漂浮光点粒子
+			const mode = (key === 'blue' || key === 'yellow') ? 'network' : 'float';
+			setParticleMode(mode);
+			applyMedia(key);
+			if (persist !== false) { try { localStorage.setItem(KEY, key); } catch (e) {} }
+		}
+		// 直接点击：按 THEME_KEYS 顺序切到下一个主题（循环）
+		if (toggle) {
+			toggle.addEventListener('click', function () {
+				const cur = root.getAttribute('data-theme') || 'pink';
+				const idx = THEME_KEYS.indexOf(cur);
+				const next = THEME_KEYS[(idx + 1) % THEME_KEYS.length];
+				applyTheme(next, true);
+			});
+		}
+
+		// 进入网站：有存档用存档，否则随机风格
+		let saved = null;
+		try { saved = localStorage.getItem(KEY); } catch (e) {}
+		applyTheme(saved || THEME_KEYS[Math.floor(Math.random() * THEME_KEYS.length)], false);
+	})();
+</script>
