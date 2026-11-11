@@ -3,7 +3,7 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
+import FallbackImage from '../assets/xiaoqiao-hero.jpg';
 import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
 
@@ -152,11 +152,11 @@ const { title, description, image = FallbackImage } = Astro.props;
 
 		// ---------- 主题对应的角色资源（原画 / 头像 / 标签页图标） ----------
 		const MEDIA = {
-			pink:   { hero: '/xiaoqiao/hero-pink.jpg',   avatar: '/xiaoqiao/avatar-pink.jpg' },
-			blue:   { hero: '/xiaoqiao/hero-blue.jpg',   avatar: '/xiaoqiao/avatar-blue.jpg' },
-			purple: { hero: '/xiaoqiao/hero-purple.jpg', avatar: '/xiaoqiao/avatar-purple.jpg' },
-			yellow: { hero: '/xiaoqiao/hero-yellow.jpg', avatar: '/xiaoqiao/avatar-yellow.jpg' },
-			green:  { hero: '/xiaoqiao/hero-green.jpg',  avatar: '/xiaoqiao/avatar-green.jpg' },
+			pink:   { hero: '/xiaoqiao/hero-pink.jpg',   avatar: '/xiaoqiao/avatar-pink.jpg',   tagline: '恋之微风，如约而至。' },
+			blue:   { hero: '/xiaoqiao/hero-blue.jpg',   avatar: '/xiaoqiao/avatar-blue.jpg',   tagline: '时之魔女，踏光而来。' },
+			purple: { hero: '/xiaoqiao/hero-purple.jpg', avatar: '/xiaoqiao/avatar-purple.jpg', tagline: '天鹅之梦，邀你共舞。' },
+			yellow: { hero: '/xiaoqiao/hero-yellow.jpg', avatar: '/xiaoqiao/avatar-yellow.jpg', tagline: '山海琳琅，万物有灵。' },
+			green:  { hero: '/xiaoqiao/hero-green.jpg',  avatar: '/xiaoqiao/avatar-green.jpg',  tagline: '线条小狗，今天也要可可爱爱～' },
 		};
 		function applyMedia(key) {
 			const m = MEDIA[key];
@@ -167,6 +167,9 @@ const { title, description, image = FallbackImage } = Astro.props;
 			// 标签页图标（favicon）也跟着换
 			const fav = document.querySelector('link[rel="icon"]');
 			if (fav) { fav.setAttribute('href', m.avatar); fav.setAttribute('type', 'image/jpeg'); }
+			// 首页欢迎语也跟随主题切换
+			const tag = document.getElementById('heroTagline');
+			if (tag && m.tagline) tag.textContent = m.tagline;
 		}
 
 		// ---------- 主题切换 ----------
